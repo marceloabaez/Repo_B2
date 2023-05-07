@@ -4,6 +4,7 @@ Cohorte 19
 
 PREGUNTAS ORIENTADORAS.
 
+------------------------------------------------------------------------------------------
 1) Describa brevemente los diferentes perfiles de familias de microprocesadores/
 microcontroladores de ARM. Explique algunas de sus diferencias características.
 
@@ -23,11 +24,23 @@ embebidos de alta performance, donde se prioriza la cantidad de información pro
 la capacidad de atender rápidamente a una excepción, por ejemplo en aplicaciones multimedia.
 
 CORTEX M.
-
+-------------------------------------------------------------------------------------------
 1) Describa brevemente las diferencias entre las familias de procesadores Cortex 
 M0, M3 y M4.
 
+Los procesadores Cortex M0 están diseñados para aplicaciones menos exigentes donde se prime
+el bajo consumo y bajo costo. No cuenta con características que propicien el uso de un RTOS
+como el SysTick Timer, Stacks Pointers diferenciados o unidad de protección de memoria (MPU)
+y ni otras funcionalidades destinadas a realizar operaciones más complejas como unidad de 
+punto flotante ni operación de división por Hardware. Por otro lado ésto á su vez implica 
+la utilización de un set de instrucciones más sencillo.
+Los Cortex M3 y M4 se utilizan para aplicaciones que exijan un mayor rendimiento, siendo a
+su vez más costosos y de mayor consumo. Incluyen el temporizador SysTick, MPU, división
+por Hardwarde y operaciones matemáticas con saturación. El Cortex M4 se disetingue del M3
+por incluír algunas funciones adicionales como instrucciones orientadas al procesamiento de
+señales (DSP) y una unidad de punto flotante opcional.
 
+-------------------------------------------------------------------------------------------
 2) ¿Por qué se dice que el set de instrucciones Thumb permite mayor densidad de código?
 Explique.
 
@@ -36,6 +49,7 @@ mayoría de las instrucciones simples de 16 bits, esto permite que los programas
 menor cantidad de memoria con respecto a la que ocuparían si fueran escritos en un set de
 instrucciones puramente en 32bits (un 65% según la página de ARM).
 
+------------------------------------------------------------------------------------------
 3) ¿Qué entiende por arquitectura load-store? ¿Qué tipo de instrucciones no posee este
 tipo de arquitectura?
 
@@ -44,21 +58,33 @@ procesador. En ésta las instrucciones se dividen entre instrucciones de acceso 
 (copiar información desde memoria a un registro o hacerlo de forma inversa) u operaciónes
 realizadas por la ALU entre registros.
 
+------------------------------------------------------------------------------------------
 4) ¿Cómo es el mapa de memoria de la familia?
-
+El mapa de memoria de la familia Cortex de procesadores en de tipo unificada. Toda la
+memoria (programa, SRAM, externa, de control de periféricos internos y externos, etc) se
+encuentra mapeada en distintas porciones predefinidas de un único mapa de 4GB (usando
+un direccionamiento de 32 bits).
+ 
+------------------------------------------------------------------------------------------
 5) ¿Qué ventajas presenta el uso de los “shadowed pointers” del PSP y el MSP?
+El uso de Shadow Pointers permite utiliter
 
+------------------------------------------------------------------------------------------
 6) Describa los diferentes modos de privilegio y operación del Cortex M, sus relaciones y
 como se conmuta de uno al otro. Describa un ejemplo en el que se pasa del modo
 privilegiado a no priviligiado y nuevamente a privilegiado.
 
+------------------------------------------------------------------------------------------
 7) ¿Qué se entiende por modelo de registros ortogonal? Dé un ejemplo.
 
+------------------------------------------------------------------------------------------
 8) ¿Qué ventajas presenta el uso de intrucciones de ejecución condicional (IT)? Dé un
 ejemplo.
 
+------------------------------------------------------------------------------------------
 9) Describa brevemente las excepciones más prioritarias (reset, NMI, Hardfault).
 
+------------------------------------------------------------------------------------------
 10) Describa las funciones principales de la pila. ¿Cómo resuelve la arquitectura el llamado
 a funciones y su retorno?
 
