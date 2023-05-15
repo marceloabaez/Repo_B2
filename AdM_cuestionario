@@ -67,7 +67,11 @@ un direccionamiento de 32 bits).
  
 ------------------------------------------------------------------------------------------
 5) ¿Qué ventajas presenta el uso de los “shadowed pointers” del PSP y el MSP?
-El uso de Shadow Pointers permite utiliter
+El uso de Shadow Pointers permite utililizar dos stacks, el Main Stack y el Process Stack.
+Esto es aprovechado especialmente por los RTOS, donde el sistema operativo utiliza MSP
+para sus funciones y delega el PSP para las Tasks. Como el cambio entre PSP y MSP solo
+puede ser realizado en modo privilegiado, se protege el MSP de ser corrompido por aplicaciones
+que no críticas o poco confiables, aumentando por lo tanto la estabilidad del sistema. 
 
 ------------------------------------------------------------------------------------------
 6) Describa los diferentes modos de privilegio y operación del Cortex M, sus relaciones y

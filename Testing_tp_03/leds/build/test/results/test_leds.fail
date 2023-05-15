@@ -1,0 +1,54 @@
+---
+:source:
+  :path: test
+  :file: test_leds.c
+:successes:
+- :test: test_LedsInit
+  :line: 18
+  :message: ''
+  :unity_test_time: 0
+- :test: test_prender_un_led
+  :line: 25
+  :message: ''
+  :unity_test_time: 0
+- :test: test_prender_y_apagar_un_led
+  :line: 33
+  :message: ''
+  :unity_test_time: 0
+- :test: test_prender_y_apagar_varios_led
+  :line: 43
+  :message: ''
+  :unity_test_time: 0
+- :test: test_encender_todos_los_leds
+  :line: 54
+  :message: ''
+  :unity_test_time: 0
+- :test: test_apagar_todos_los_leds
+  :line: 62
+  :message: ''
+  :unity_test_time: 0
+- :test: test_valores_limite_bajos
+  :line: 71
+  :message: ''
+  :unity_test_time: 0
+- :test: test_valores_limite_altos
+  :line: 82
+  :message: ''
+  :unity_test_time: 0
+- :test: test_valores_limite_tipos_incorrectos
+  :line: 93
+  :message: ''
+  :unity_test_time: 0
+:failures:
+- :test: test_valores_limite_tipos_incorrectos_2
+  :line: 111
+  :message: Expected 0 Was 2
+  :unity_test_time: 0
+:ignores: []
+:counts:
+  :total: 10
+  :passed: 9
+  :failed: 1
+  :ignored: 0
+:stdout: []
+:time: 0.000613444000009622
