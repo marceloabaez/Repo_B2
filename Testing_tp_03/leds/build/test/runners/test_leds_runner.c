@@ -20,6 +20,7 @@ extern void test_valores_limite_bajos(void);
 extern void test_valores_limite_altos(void);
 extern void test_valores_limite_tipos_incorrectos(void);
 extern void test_valores_limite_tipos_incorrectos_2(void);
+extern void test_valores_limite_tipos_incorrectos_3(void);
 
 
 /*=======Mock Management=====*/
@@ -90,16 +91,17 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_leds.c");
-  run_test(test_LedsInit, "test_LedsInit", 18);
-  run_test(test_prender_un_led, "test_prender_un_led", 25);
-  run_test(test_prender_y_apagar_un_led, "test_prender_y_apagar_un_led", 33);
-  run_test(test_prender_y_apagar_varios_led, "test_prender_y_apagar_varios_led", 43);
-  run_test(test_encender_todos_los_leds, "test_encender_todos_los_leds", 54);
-  run_test(test_apagar_todos_los_leds, "test_apagar_todos_los_leds", 62);
-  run_test(test_valores_limite_bajos, "test_valores_limite_bajos", 71);
-  run_test(test_valores_limite_altos, "test_valores_limite_altos", 82);
-  run_test(test_valores_limite_tipos_incorrectos, "test_valores_limite_tipos_incorrectos", 93);
-  run_test(test_valores_limite_tipos_incorrectos_2, "test_valores_limite_tipos_incorrectos_2", 104);
+  run_test(test_LedsInit, "test_LedsInit", 19);
+  run_test(test_prender_un_led, "test_prender_un_led", 26);
+  run_test(test_prender_y_apagar_un_led, "test_prender_y_apagar_un_led", 34);
+  run_test(test_prender_y_apagar_varios_led, "test_prender_y_apagar_varios_led", 44);
+  run_test(test_encender_todos_los_leds, "test_encender_todos_los_leds", 55);
+  run_test(test_apagar_todos_los_leds, "test_apagar_todos_los_leds", 63);
+  run_test(test_valores_limite_bajos, "test_valores_limite_bajos", 72);
+  run_test(test_valores_limite_altos, "test_valores_limite_altos", 83);
+  run_test(test_valores_limite_tipos_incorrectos, "test_valores_limite_tipos_incorrectos", 92);
+  run_test(test_valores_limite_tipos_incorrectos_2, "test_valores_limite_tipos_incorrectos_2", 101);
+  run_test(test_valores_limite_tipos_incorrectos_3, "test_valores_limite_tipos_incorrectos_3", 113);
 
   return UnityEnd();
 }

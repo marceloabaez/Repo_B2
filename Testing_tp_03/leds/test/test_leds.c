@@ -9,6 +9,7 @@
 // Con todos los leds prendidor, apagado todos los leds y verifico que se apagan.
 // Revisar los valores limites de los argumentos.
 // Revisar que pasa con valores erroneos en los argumento.
+// Poder utilizar lógica directa e inversa.
 
 #include "unity.h"
 #include "leds.h"
@@ -81,32 +82,36 @@ TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 // Revisa los valores límite altos.
 void test_valores_limite_altos(void){
 int a = 17;
-//int b = 20;
 uint16_t puerto_virtual;
 ledsInit(&puerto_virtual);
 ledsTurnOnSingle(a);
-//ledsTurnOnSingle(b);
 TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 }
 
 // Revisa los valores de tipo incorrecto.
 void test_valores_limite_tipos_incorrectos(void){
-float a = 14.7;
-//int b = 20;
 uint16_t puerto_virtual;
+float a = 14.7;
 ledsInit(&puerto_virtual);
 ledsTurnOnSingle(a);
-//ledsTurnOnSingle(b);
 TEST_ASSERT_EQUAL(0b0010000000000000, puerto_virtual);
 }
 
 // Revisa los valores de tipo incorrecto 2.
 void test_valores_limite_tipos_incorrectos_2(void){
-char a = 'B';
-//int b = 20;
 uint16_t puerto_virtual;
+//En algunos compiladores da error y en otros no, aquí parece desbordar y
+//empezar en 0 luego de los 64 bits, en todo caso para solucionar se
+//filtraron los valores incorrectos
+char a = 'B';
 ledsInit(&puerto_virtual);
 ledsTurnOnSingle(a);
-//ledsTurnOnSingle(b);
 TEST_ASSERT_EQUAL(0x0, puerto_virtual);
+}
+
+// Revisa los valores de tipo incorrecto 3.
+void test_valores_limite_tipos_incorrectos_3(void){
+uint16_t puerto_virtual;
+uint16_t * c = NULL;
+TEST_ASSERT_EQUAL(0x1, ledsInit(c));
 }

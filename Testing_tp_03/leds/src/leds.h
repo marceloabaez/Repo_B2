@@ -1,6 +1,8 @@
 #ifndef LEDS_H
 #define LEDS_H
 
+#include <stdio.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef enum{
@@ -8,7 +10,7 @@ typedef enum{
     ON_LOW,
 }logica;
 
-void ledsInit(uint16_t * direccion);
+int ledsInit(uint16_t * direccion);
 void ledsTurnOnSingle(uint8_t led);
 void ledsTurnOffSingle(uint8_t led);
 void ledsTurnOnAll();
