@@ -82,8 +82,8 @@ const char *pcTextForTask_LDXTOff		= " - LDX turn Off\r\n";
 const char *pcTextForTask_BlinkingOn	= " - Blinking turn On \r\n";
 const char *pcTextForTask_BlinkingOff	= " - Blinking turn Off\r\n";
 
-#define 		buttonTickCntMAX	500
-#define			ledTickCntMAX		500
+#define 		debounceTime	100 //milisegundos de debounce del pulsador
+#define			blinkingPeriod	1000 //Periodo en milisegundos de parpadeo de LEDs
 
 //uint16_t	  LDX_Pin[]			= { LD1_Pin,       LD2_Pin,       LD3_Pin };
 //GPIO_TypeDef* LDX_GPIO_Port[]	= { LD1_GPIO_Port, LD2_GPIO_Port, LD3_GPIO_Port };
@@ -100,13 +100,53 @@ LDX_Config_t	LDX_Config[] 	= { { LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET, NotBlin
 
 /*------------------------------------------------------------------*/
 /* Task Function thread */
-void vTaskFunction( void *pvParameters )
+void vTaskLed( void *pvParameters )
 {
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
 	LDX_Config_t * ptr = (LDX_Config_t *) pvParameters;
 	ptr->ledTickCnt = xTaskGetTickCount();
+	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
-	TickType_t buttonTickCnt = xTaskGetTickCount();
+	/* Print out the name of this task. */
+	vPrintTwoStrings( pcTaskName, pcTextForTask_IsRunning );
+
+	// variables para tiempo de demora y referencia de tiempo
+	const TickType_t delayLED = pdMS_TO_TICKS(blinkingPeriod/2);
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+
+
+	/* As per most tasks, this task is implemented in an infinite loop. */
+	for( ;; )
+	{
+
+		/* Check Led Flag */
+		if( ptr->ledFlag == Blinking )
+		{
+			if( ptr->ledState == GPIO_PIN_RESET )
+			{
+				ptr->ledState = GPIO_PIN_SET;
+				vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOn );
+			}
+			else
+			{
+				ptr->ledState = GPIO_PIN_RESET;
+				vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOff );
+			}
+			/* Update HW Led State */
+			HAL_GPIO_WritePin( ptr->LDX_GPIO_Port, ptr->LDX_Pin, ptr->ledState );
+
+			vTaskDelayUntil(&xLastWakeTime, delayLED);
+		}
+	}
+}
+
+
+void vTaskButton( void *pvParameters)
+{
+	/*  Declare & Initialize Task Function variables for argument, led, button and task */
+	LDX_Config_t * ptr = (LDX_Config_t *) pvParameters;
+	bool blinking = NotBlinking;
+	const TickType_t buttonDelay = pdMS_TO_TICKS(debounceTime);
 
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
@@ -119,51 +159,22 @@ void vTaskFunction( void *pvParameters )
 		/* Check HW Button State */
 		if( HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin ) == GPIO_PIN_SET )
 		{
-			/* Delay for a period using Tick Count */
-			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )
-			{
-        		/* Check, Update and Print Led Flag */
-				if( ptr->ledFlag == NotBlinking )
-				{
-					ptr->ledFlag = Blinking;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
+			vTaskDelay(buttonDelay);
+			if( HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin ) == GPIO_PIN_SET ){
+				if (blinking == NotBlinking){
+					blinking = Blinking;
 				}
-				else
-				{
-					ptr->ledFlag = NotBlinking;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
+				else{
+					blinking = NotBlinking;
 				}
-				/* Update and Button Tick Counter */
-        		buttonTickCnt = xTaskGetTickCount();
+				ptr[0].ledFlag = blinking;
+				ptr[1].ledFlag = blinking;
+				ptr[2].ledFlag = blinking;
 			}
 		}
+		vTaskDelay(buttonDelay); // evita cambios dobles rápidos de estado
+	}}
 
-		/* Check Led Flag */
-		if( ptr->ledFlag == Blinking )
-		{
-			/* Delay for a period using Tick Count. */
-			if( ( xTaskGetTickCount() - ptr->ledTickCnt ) >= ledTickCntMAX )
-			{
-				/* Check, Update and Print Led State */
-		    	if( ptr->ledState == GPIO_PIN_RESET )
-		    	{
-		    		ptr->ledState = GPIO_PIN_SET;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOn );
-		    	}
-		    	else
-		    	{
-		    		ptr->ledState = GPIO_PIN_RESET;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOff );
-		    	}
-				/* Update HW Led State */
-		    	HAL_GPIO_WritePin( ptr->LDX_GPIO_Port, ptr->LDX_Pin, ptr->ledState );
-
-		    	/* Update and Led Tick Counter */
-		    	ptr->ledTickCnt = xTaskGetTickCount();
-			}
-		}
-	}
-}
 
 /*------------------------------------------------------------------*-
   ---- END OF FILE -------------------------------------------------

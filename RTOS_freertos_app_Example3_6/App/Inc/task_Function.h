@@ -72,6 +72,9 @@ extern LDX_Config_t LDX_Config[];
 // ------ external functions declaration -------------------------------
 
 void vTaskFunction( void *pvParameters );
+void vTaskLed( void *pvParameters );
+void vTaskButton( void *pvParameters);
+
 
 #ifdef __cplusplus
 }
