@@ -15,4 +15,5 @@ void ledsTurnOnSingle(uint8_t led);
 void ledsTurnOffSingle(uint8_t led);
 void ledsTurnOnAll();
 void ledsTurnOffAll();
+bool ledsConsult(uint8_t led);
 #endif

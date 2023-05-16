@@ -4,6 +4,7 @@
 static uint16_t * puerto_virtual;
 bool logica_leds = 0;
 
+//inicializa todos los leds apagados
 int ledsInit(uint16_t * direccion, bool logica){
     if(direccion == NULL){
         return 1;
@@ -23,6 +24,7 @@ int ledsInit(uint16_t * direccion, bool logica){
     }
 }
 
+//enciende un solo led
 void ledsTurnOnSingle(uint8_t led){
     if (led < 1 || led >= 17){
         return;
@@ -36,6 +38,7 @@ void ledsTurnOnSingle(uint8_t led){
     }
 }
 
+//apaga un solo led
 void ledsTurnOffSingle(uint8_t led){
       if (led < 1 || led >= 17){
         return;
@@ -50,6 +53,7 @@ void ledsTurnOffSingle(uint8_t led){
     }   
 }
 
+//enciende todos los leds
 void ledsTurnOnAll(){
     if(logica_leds == ON_HIGH){
     *puerto_virtual = 0xFFFF;
@@ -61,6 +65,7 @@ void ledsTurnOnAll(){
     }
 }
 
+//apaga todos los leds
 void ledsTurnOffAll(){
     if(logica_leds == ON_HIGH){
     *puerto_virtual = 0x0;
@@ -71,3 +76,30 @@ void ledsTurnOffAll(){
     return;
     }
 }
+
+//consulta si un led de encuentra encendido o apagado
+bool ledsConsult(uint8_t led){
+bool aux = NULL;
+if (led < 1 || led >= 17){
+        return NULL;
+    }
+if(logica_leds == ON_HIGH){
+    if (*puerto_virtual && (1<<(led-1))){
+        return 1;
+    }
+    else{
+        return 0;
+    }}
+
+else if(logica_leds == ON_LOW){
+    if (!(*puerto_virtual && (1<<(led-1)))){
+        return 1;
+    }
+    else{
+        return 0;
+    }}
+
+else{
+    return NULL;
+}
+    }

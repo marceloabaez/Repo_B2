@@ -21,12 +21,13 @@ extern void test_valores_limite_altos(void);
 extern void test_valores_limite_tipos_incorrectos(void);
 extern void test_valores_limite_tipos_incorrectos_2(void);
 extern void test_valores_limite_tipos_incorrectos_3(void);
+extern void test_consulta_estado(void);
 extern void test_LedsInit_LI(void);
 extern void test_prender_un_led_LI(void);
 extern void test_prender_y_apagar_un_led_LI(void);
 extern void test_prender_y_apagar_varios_led_LI(void);
 extern void test_encender_todos_los_leds_LI(void);
-extern void test_apagar_todos_los_leds_LI(void);
+extern void test_consulta_estado_LI(void);
 
 
 /*=======Mock Management=====*/
@@ -97,23 +98,24 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_leds.c");
-  run_test(test_LedsInit, "test_LedsInit", 19);
-  run_test(test_prender_un_led, "test_prender_un_led", 27);
-  run_test(test_prender_y_apagar_un_led, "test_prender_y_apagar_un_led", 35);
-  run_test(test_prender_y_apagar_varios_led, "test_prender_y_apagar_varios_led", 45);
-  run_test(test_encender_todos_los_leds, "test_encender_todos_los_leds", 56);
-  run_test(test_apagar_todos_los_leds, "test_apagar_todos_los_leds", 64);
-  run_test(test_valores_limite_bajos, "test_valores_limite_bajos", 73);
-  run_test(test_valores_limite_altos, "test_valores_limite_altos", 84);
-  run_test(test_valores_limite_tipos_incorrectos, "test_valores_limite_tipos_incorrectos", 93);
-  run_test(test_valores_limite_tipos_incorrectos_2, "test_valores_limite_tipos_incorrectos_2", 102);
-  run_test(test_valores_limite_tipos_incorrectos_3, "test_valores_limite_tipos_incorrectos_3", 114);
-  run_test(test_LedsInit_LI, "test_LedsInit_LI", 126);
-  run_test(test_prender_un_led_LI, "test_prender_un_led_LI", 133);
-  run_test(test_prender_y_apagar_un_led_LI, "test_prender_y_apagar_un_led_LI", 141);
-  run_test(test_prender_y_apagar_varios_led_LI, "test_prender_y_apagar_varios_led_LI", 151);
-  run_test(test_encender_todos_los_leds_LI, "test_encender_todos_los_leds_LI", 163);
-  run_test(test_apagar_todos_los_leds_LI, "test_apagar_todos_los_leds_LI", 171);
+  run_test(test_LedsInit, "test_LedsInit", 20);
+  run_test(test_prender_un_led, "test_prender_un_led", 28);
+  run_test(test_prender_y_apagar_un_led, "test_prender_y_apagar_un_led", 36);
+  run_test(test_prender_y_apagar_varios_led, "test_prender_y_apagar_varios_led", 46);
+  run_test(test_encender_todos_los_leds, "test_encender_todos_los_leds", 57);
+  run_test(test_apagar_todos_los_leds, "test_apagar_todos_los_leds", 65);
+  run_test(test_valores_limite_bajos, "test_valores_limite_bajos", 74);
+  run_test(test_valores_limite_altos, "test_valores_limite_altos", 85);
+  run_test(test_valores_limite_tipos_incorrectos, "test_valores_limite_tipos_incorrectos", 94);
+  run_test(test_valores_limite_tipos_incorrectos_2, "test_valores_limite_tipos_incorrectos_2", 103);
+  run_test(test_valores_limite_tipos_incorrectos_3, "test_valores_limite_tipos_incorrectos_3", 115);
+  run_test(test_consulta_estado, "test_consulta_estado", 122);
+  run_test(test_LedsInit_LI, "test_LedsInit_LI", 136);
+  run_test(test_prender_un_led_LI, "test_prender_un_led_LI", 143);
+  run_test(test_prender_y_apagar_un_led_LI, "test_prender_y_apagar_un_led_LI", 151);
+  run_test(test_prender_y_apagar_varios_led_LI, "test_prender_y_apagar_varios_led_LI", 161);
+  run_test(test_encender_todos_los_leds_LI, "test_encender_todos_los_leds_LI", 173);
+  run_test(test_consulta_estado_LI, "test_consulta_estado_LI", 181);
 
   return UnityEnd();
 }

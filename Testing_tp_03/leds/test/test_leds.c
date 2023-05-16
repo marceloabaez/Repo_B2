@@ -10,6 +10,7 @@
 // Revisar los valores limites de los argumentos.
 // Revisar que pasa con valores erroneos en los argumento.
 // Poder utilizar lógica directa e inversa.
+// Consultar el estado de un LED
 
 #include "unity.h"
 #include "leds.h"
@@ -117,6 +118,15 @@ uint16_t * c = NULL;
 TEST_ASSERT_EQUAL(0x1, ledsInit(c, ON_HIGH));
 }
 
+//Consulta el estado de un LED
+void test_consulta_estado(void){
+uint16_t puerto_virtual;
+ledsInit(&puerto_virtual, ON_HIGH);
+ledsTurnOnSingle(4);
+ledsTurnOnSingle(15);
+TEST_ASSERT_EQUAL(1, ledsConsult(4));
+TEST_ASSERT_EQUAL(1, ledsConsult(15));
+}
 
 //-------------------------------------------------------
 //Tests con lógica invertida
@@ -165,4 +175,14 @@ uint16_t puerto_virtual;
 ledsInit(&puerto_virtual, ON_LOW);
 ledsTurnOnAll();
 TEST_ASSERT_EQUAL(0x0000, puerto_virtual);
+}
+
+//Consulta el estado de un LED
+void test_consulta_estado_LI(void){
+uint16_t puerto_virtual;
+ledsInit(&puerto_virtual, ON_LOW);
+ledsTurnOnSingle(4);
+ledsTurnOnSingle(15);
+TEST_ASSERT_EQUAL(0, ledsConsult(4));
+TEST_ASSERT_EQUAL(0, ledsConsult(15));
 }
