@@ -17,15 +17,16 @@
 
 //Al inicializar la biblioteca todos los LEDs quedan apagados
 void test_LedsInit(void){
+    bool logica_leds = ON_HIGH;
     uint16_t puerto_virtual = 0xFFFF;
-    ledsInit(&puerto_virtual);
+    ledsInit(&puerto_virtual, ON_HIGH);
     TEST_ASSERT_EQUAL(0x0000, puerto_virtual);
 }
 
 //Con todos los LEDs apagados, enciende el número 2
 void test_prender_un_led(void){
     uint16_t puerto_virtual;
-    ledsInit(&puerto_virtual);
+    ledsInit(&puerto_virtual, ON_HIGH);
     ledsTurnOnSingle(2);
     TEST_ASSERT_EQUAL(0X0002, puerto_virtual);
 }
@@ -33,7 +34,7 @@ void test_prender_un_led(void){
 //Prender y apagar un led
 void test_prender_y_apagar_un_led(void){
     uint16_t puerto_virtual;
-    ledsInit(&puerto_virtual);
+    ledsInit(&puerto_virtual, ON_HIGH);
     ledsTurnOnSingle(2);
     ledsTurnOffSingle(2);
     TEST_ASSERT_EQUAL(0X0, puerto_virtual);
@@ -43,7 +44,7 @@ void test_prender_y_apagar_un_led(void){
 // deberían quedar el bit 4 en 1 y el resto en 0
 void test_prender_y_apagar_varios_led(void){
     uint16_t puerto_virtual;
-    ledsInit(&puerto_virtual);
+    ledsInit(&puerto_virtual, ON_HIGH);
     ledsTurnOnSingle(3);
     ledsTurnOnSingle(5);
     ledsTurnOffSingle(3);
@@ -54,7 +55,7 @@ void test_prender_y_apagar_varios_led(void){
 // Con todos los leds apagados, prendo todos los leds y verifico que se encienden.
 void test_encender_todos_los_leds(void){
 uint16_t puerto_virtual;
-ledsInit(&puerto_virtual);
+ledsInit(&puerto_virtual, ON_HIGH);
 ledsTurnOnAll();
 TEST_ASSERT_EQUAL(0xFFFF, puerto_virtual);
 }
@@ -62,7 +63,7 @@ TEST_ASSERT_EQUAL(0xFFFF, puerto_virtual);
 // Con todos los leds encendidos, apagar todos los leds y verifico que se apagan.
 void test_apagar_todos_los_leds(void){
 uint16_t puerto_virtual;
-ledsInit(&puerto_virtual);
+ledsInit(&puerto_virtual, ON_HIGH);
 ledsTurnOnAll();
 ledsTurnOffAll();
 TEST_ASSERT_EQUAL(0x0, puerto_virtual);
@@ -73,7 +74,7 @@ void test_valores_limite_bajos(void){
 int a = 0;
 int b = -2;
 uint16_t puerto_virtual;
-ledsInit(&puerto_virtual);
+ledsInit(&puerto_virtual, ON_HIGH);
 ledsTurnOnSingle(a);
 ledsTurnOnSingle(b);
 TEST_ASSERT_EQUAL(0x0, puerto_virtual);
@@ -83,7 +84,7 @@ TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 void test_valores_limite_altos(void){
 int a = 17;
 uint16_t puerto_virtual;
-ledsInit(&puerto_virtual);
+ledsInit(&puerto_virtual, ON_HIGH);
 ledsTurnOnSingle(a);
 TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 }
@@ -92,7 +93,7 @@ TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 void test_valores_limite_tipos_incorrectos(void){
 uint16_t puerto_virtual;
 float a = 14.7;
-ledsInit(&puerto_virtual);
+ledsInit(&puerto_virtual, ON_HIGH);
 ledsTurnOnSingle(a);
 TEST_ASSERT_EQUAL(0b0010000000000000, puerto_virtual);
 }
@@ -104,7 +105,7 @@ uint16_t puerto_virtual;
 //empezar en 0 luego de los 64 bits, en todo caso para solucionar se
 //filtraron los valores incorrectos
 char a = 'B';
-ledsInit(&puerto_virtual);
+ledsInit(&puerto_virtual, ON_HIGH);
 ledsTurnOnSingle(a);
 TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 }
@@ -113,5 +114,55 @@ TEST_ASSERT_EQUAL(0x0, puerto_virtual);
 void test_valores_limite_tipos_incorrectos_3(void){
 uint16_t puerto_virtual;
 uint16_t * c = NULL;
-TEST_ASSERT_EQUAL(0x1, ledsInit(c));
+TEST_ASSERT_EQUAL(0x1, ledsInit(c, ON_HIGH));
+}
+
+
+//-------------------------------------------------------
+//Tests con lógica invertida
+
+
+//Al inicializar la biblioteca todos los LEDs quedan apagados
+void test_LedsInit_LI(void){
+    uint16_t puerto_virtual = 0x0000;
+    ledsInit(&puerto_virtual, ON_LOW);
+    TEST_ASSERT_EQUAL(0xFFFF, puerto_virtual);
+}
+
+//Con todos los LEDs apagados, enciende el número 2
+void test_prender_un_led_LI(void){
+    uint16_t puerto_virtual;
+    ledsInit(&puerto_virtual, ON_LOW);
+    ledsTurnOnSingle(2);
+    TEST_ASSERT_EQUAL(0b1111111111111101, puerto_virtual);
+}
+
+//Prender y apagar un led
+void test_prender_y_apagar_un_led_LI(void){
+    uint16_t puerto_virtual;
+    ledsInit(&puerto_virtual, ON_LOW);
+    ledsTurnOnSingle(2);
+    ledsTurnOffSingle(2);
+    TEST_ASSERT_EQUAL(0XFFFF, puerto_virtual);
+}
+
+// Con todos los leds apagados, prendo el 3, prendo el 5, apago el 3 y apago el 7,
+// deberían quedar el bit 4 en 1 y el resto en 0
+void test_prender_y_apagar_varios_led_LI(void){
+    uint16_t puerto_virtual;
+    ledsInit(&puerto_virtual, ON_LOW);
+    ledsTurnOnSingle(3);
+    ledsTurnOnSingle(5);
+    ledsTurnOffSingle(3);
+    ledsTurnOffSingle(7);
+    TEST_ASSERT_EQUAL(0b1111111111101111, puerto_virtual);
+}
+
+
+// Con todos los leds apagados, prendo todos los leds y verifico que se encienden.
+void test_encender_todos_los_leds_LI(void){
+uint16_t puerto_virtual;
+ledsInit(&puerto_virtual, ON_LOW);
+ledsTurnOnAll();
+TEST_ASSERT_EQUAL(0x0000, puerto_virtual);
 }
