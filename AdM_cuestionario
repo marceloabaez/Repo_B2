@@ -81,16 +81,43 @@ privilegiado a no priviligiado y nuevamente a privilegiado.
 ------------------------------------------------------------------------------------------
 7) ¿Qué se entiende por modelo de registros ortogonal? Dé un ejemplo.
 
+
 ------------------------------------------------------------------------------------------
 8) ¿Qué ventajas presenta el uso de intrucciones de ejecución condicional (IT)? Dé un
 ejemplo.
 
 ------------------------------------------------------------------------------------------
 9) Describa brevemente las excepciones más prioritarias (reset, NMI, Hardfault).
+- El reset es la interrupción de mayor prioridad (prioridad -3) esto significa que una vez
+que se produce nada puede interrumpir su ejecución. Este comportamiento es por supuesto
+el que se desea al activar el Reset, un reinicio incondicional del sistema.
+- El NMI es un tipo de interrupción que no puede ser enmascarada (ignorada por seteo de los
+registros PRIMASK y BASEPRI), solamente puede ser precedida por el Reset. Se utiliza para
+manejar interrupciones que por su naturaleza no deban ser de ninguna manera interrupmpidas
+cuando se realiza su atención.
+- HardFault: Los Cortex M presentan interrupciones para manejar distintos tipos de 
+falla: Memory Manage Fault, Bus Fault y Usage Fault, las cuales se disparan automáticamente
+cuando se produce un fallo del tipo correspondiete a cada una. Dicho fallo debe ser manejado
+por la interrupción apropiada para solucionar el problema o al menos detener el programa
+indicando algún código apropiado para el tipo de falla. El HardFault es una interrupción que
+se dispara cuando alguna de estas falla escala debido a que se produjo alguna falla en el
+handler correspondiente, cuando dicho handler no estaba habilitado. También puede dispararse
+cuando se produce un evento de debug mientras el subsistema de debug se encuentra desactivado
+o cuando una falla se produce al leer del vector table.  
 
 ------------------------------------------------------------------------------------------
 10) Describa las funciones principales de la pila. ¿Cómo resuelve la arquitectura el llamado
 a funciones y su retorno?
+Las funciones principales para trabajar con la pila son PUSH y POP. La pila es una estructura
+de datos de tipo LIFO. La función PUSH agrega un dato a la pila (en el caso de Full descending
+stack decrementa la dirección del stack pointer y guarda el dato en la nueva dirección). La
+función PULL retira el último dato guardado en la lista (lee el dato apuntado por el stack
+pointer y luego incrementa la dirección).
+Al llamar a una función se guardan antes los registros que contengan valores de interés mas el
+valor del Link Register en el stack mediante instrucciones PUSH antes de efectuar el salto.
+Cuando se retorna de la función se recupera de la pila el valor de retorno de la función
+llamada (si lo hubiera), la dirección que se había guardado del Link Register y los valores de 
+registros que fueron guardados antes del salto, todo esto mediante la instrucción POP.
 
 11) Describa la secuencia de reset del microprocesador.
 

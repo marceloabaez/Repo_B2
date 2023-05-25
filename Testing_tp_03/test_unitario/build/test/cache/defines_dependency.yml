@@ -1,0 +1,7 @@
+---
+build/test/mocks/mock_API_RTC_port.c:
+- TEST
+build/test/mocks/mock_API_uart.c:
+- TEST
+src/API_RTC.c:
+- TEST
