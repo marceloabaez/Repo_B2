@@ -10,6 +10,11 @@ typedef enum {
   ON_LOW,
 } logica;
 
+typedef enum {
+  SUCCESS,
+  FAIL,
+} retorno;
+
 int ledsInit(uint16_t *direccion, bool logica);
 void ledsTurnOnSingle(uint8_t led);
 void ledsTurnOffSingle(uint8_t led);
