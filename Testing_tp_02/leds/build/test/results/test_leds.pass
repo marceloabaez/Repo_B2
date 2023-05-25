@@ -4,75 +4,75 @@
   :file: test_leds.c
 :successes:
 - :test: test_LedsInit
-  :line: 20
+  :line: 17
   :message: ''
   :unity_test_time: 0
 - :test: test_prender_un_led
-  :line: 28
+  :line: 25
   :message: ''
   :unity_test_time: 0
 - :test: test_prender_y_apagar_un_led
-  :line: 36
+  :line: 33
   :message: ''
   :unity_test_time: 0
 - :test: test_prender_y_apagar_varios_led
-  :line: 46
+  :line: 43
   :message: ''
   :unity_test_time: 0
 - :test: test_encender_todos_los_leds
-  :line: 57
+  :line: 55
   :message: ''
   :unity_test_time: 0
 - :test: test_apagar_todos_los_leds
-  :line: 65
+  :line: 64
   :message: ''
   :unity_test_time: 0
 - :test: test_valores_limite_bajos
-  :line: 74
+  :line: 73
   :message: ''
   :unity_test_time: 0
 - :test: test_valores_limite_altos
-  :line: 85
+  :line: 84
   :message: ''
   :unity_test_time: 0
 - :test: test_valores_limite_tipos_incorrectos
-  :line: 94
+  :line: 93
   :message: ''
   :unity_test_time: 0
 - :test: test_valores_limite_tipos_incorrectos_2
-  :line: 103
+  :line: 102
   :message: ''
   :unity_test_time: 0
 - :test: test_valores_limite_tipos_incorrectos_3
-  :line: 115
+  :line: 114
   :message: ''
   :unity_test_time: 0
 - :test: test_consulta_estado
-  :line: 122
+  :line: 121
   :message: ''
   :unity_test_time: 0
 - :test: test_LedsInit_LI
-  :line: 136
+  :line: 134
   :message: ''
   :unity_test_time: 0
 - :test: test_prender_un_led_LI
-  :line: 143
+  :line: 141
   :message: ''
   :unity_test_time: 0
 - :test: test_prender_y_apagar_un_led_LI
-  :line: 151
+  :line: 149
   :message: ''
   :unity_test_time: 0
 - :test: test_prender_y_apagar_varios_led_LI
-  :line: 161
+  :line: 159
   :message: ''
   :unity_test_time: 0
 - :test: test_encender_todos_los_leds_LI
-  :line: 173
+  :line: 171
   :message: ''
   :unity_test_time: 0
 - :test: test_consulta_estado_LI
-  :line: 181
+  :line: 179
   :message: ''
   :unity_test_time: 0
 :failures: []
@@ -83,4 +83,4 @@
   :failed: 0
   :ignored: 0
 :stdout: []
-:time: 0.0006764089994248934
+:time: 0.0005639169994537951
