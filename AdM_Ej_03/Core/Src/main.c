@@ -18,11 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "string.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "string.h"
 #include "stdio.h"
 #include "errno.h"
 #include "stdlib.h"
@@ -66,7 +65,7 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-void productoEscalar32(uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
+void productoEscalar16(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -87,7 +86,6 @@ int _write(int file, char *data, int len)
    // return # of bytes written - as best we can tell
    return (status == HAL_OK ? len : 0);
 }
-
 
 /* USER CODE END 0 */
 
@@ -130,29 +128,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 uint32_t vector [8]= {23450, 4567, 45, 98759, 650000, 34567, 9865, 115200};
-	 uint32_t escalar = 23;
-	 uint32_t longitud = 8;
-	 uint32_t output[8];
-	 productoEscalar32(vector, output, longitud, escalar);
-	 printf("\r\n");
-	 for(int i=0; i<longitud; i++){
-		 printf("%ld * %ld = %ld\n\r", vector[i], escalar, output[i]);
-	 }
-	 while(1);
+	  uint16_t input = 23450;
+	  uint16_t escalar = 23;
+	  uint32_t longitud = 1;
+	  uint16_t output = 0;
+	  productoEscalar16(&input, &output, longitud, escalar);
+	  printf("\n\r%d * %d = %d\n\r", input, escalar, output);
+	  while(1);
 	  /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+	  /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
 
-void productoEscalar32(uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar){
-	for(int i=0; i<longitud; i++){
-	vectorOut[i] = vectorIn[i] * escalar;
-	}
+void productoEscalar16(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar){
+	*vectorOut = *vectorIn * escalar;
 }
-
 
 /**
   * @brief System Clock Configuration
