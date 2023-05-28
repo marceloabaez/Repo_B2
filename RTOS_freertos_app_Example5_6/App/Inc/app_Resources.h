@@ -62,7 +62,7 @@ extern TaskHandle_t xTaskLedHandle;
 
 /* Declare a variable of type QueueHandle_t.  This is used to send messages from
 the button task to the Led task. */
-extern QueueHandle_t QueueHandle;
+extern SemaphoreHandle_t semaforo;
 
 // ------ external functions declaration -------------------------------
 

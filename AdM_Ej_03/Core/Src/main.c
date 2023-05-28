@@ -128,22 +128,21 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  uint16_t input = 23450;
-	  uint16_t escalar = 23;
-	  uint32_t longitud = 1;
-	  uint16_t output = 0;
-	  productoEscalar16(&input, &output, longitud, escalar);
-	  printf("\n\r%d * %d = %d\n\r", input, escalar, output);
+	  uint16_t vector [8]= {2345, 4567, 45, 989, 6000, 34567, 9865, 1152};
+	  uint16_t escalar = 54;
+	  uint32_t longitud = 8;
+	  uint16_t output[8];
+	  productoEscalar16(vector, output, longitud, escalar);
+	  printf("\r\n");
+	  for(int i=0; i<longitud; i++){
+		  printf("%d * %d = %d\n\r", vector[i], escalar, output[i]);
+	  }
 	  while(1);
 	  /* USER CODE END WHILE */
 
 	  /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
-}
-
-void productoEscalar16(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar){
-	*vectorOut = *vectorIn * escalar;
 }
 
 /**
@@ -326,7 +325,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
@@ -337,8 +336,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
-  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
+  /*Configure GPIO pins : LD1_Pin LD3_Pin PB7 */
+  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -360,6 +359,12 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void productoEscalar16(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar){
+	for(int i=0; i<longitud; i++){
+	vectorOut[i] = vectorIn[i] * escalar;
+	}
+}
 
 /* USER CODE END 4 */
 

@@ -147,13 +147,6 @@ int main(void)
   /* USER CODE END 3 */
 }
 
-void productoEscalar32(uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar){
-	for(int i=0; i<longitud; i++){
-	vectorOut[i] = vectorIn[i] * escalar;
-	}
-}
-
-
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -368,7 +361,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void productoEscalar32(uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar){
+	for(int i=0; i<longitud; i++){
+	vectorOut[i] = vectorIn[i] * escalar;
+	}
+}
 /* USER CODE END 4 */
 
 /**

@@ -74,7 +74,7 @@ TaskHandle_t xTaskLedHandle;
 
 /* Declare a variable of type QueueHandle_t.  This is used to send messages from
 the button task to the Led task. */
-QueueHandle_t QueueHandle;
+SemaphoreHandle_t semaforo;
 
 // ------ internal functions declaration -------------------------------
 
@@ -98,12 +98,11 @@ void appInit( void )
 	/* Print out the name of this Example. */
   	vPrintString( pcTextForMain );
 
-    /* Before a queue is used it must be explicitly created.
-     * The queue is created to hold a maximum of 5 long values. */
-	QueueHandle = xQueueCreate( 5, sizeof( ledFlag_t ) );
 
-	/* Check the queues was created successfully */
-	configASSERT( QueueHandle != NULL );
+	semaforo = xSemaphoreCreateBinary(); //Inicia el semáforo
+	/* Check the Semaphore was created successfully */
+	configASSERT( semaforo != NULL );
+	xSemaphoreTake(semaforo, 0); // Vacía semáforo
 
 	ptr = &LDX_Config[0];
 	/* Task Led thread at priority 1 */

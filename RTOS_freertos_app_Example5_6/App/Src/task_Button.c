@@ -91,7 +91,6 @@ const char *pcTextForTask_BlinkingOff	= " - Blinking turn Off\r\n";
 void vTaskButton( void *pvParameters )
 {
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
-	static ledFlag_t lValueToSend = NotBlinking;
 
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
@@ -104,18 +103,7 @@ void vTaskButton( void *pvParameters )
 		/* Check HW Button State */
 		if( HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin ) == GPIO_PIN_SET )
 		{
-        	/* Check, Update and Print Led Flag */
-			if( lValueToSend == NotBlinking )
-			{
-				lValueToSend = Blinking;
-				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
-			}
-			else
-			{
-				lValueToSend = NotBlinking;
-            	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
-			}
-			xQueueSendToBack( QueueHandle, &lValueToSend, portMAX_DELAY );
+            xSemaphoreGive(semaforo);
 		}
 
 		/* We want this task to execute every 250 milliseconds. */
