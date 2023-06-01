@@ -26,6 +26,7 @@
 #include "errno.h"
 #include "stdlib.h"
 #include "unistd.h"
+#include "asm_func.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -136,6 +137,19 @@ int main(void)
 	  for(int i = 0; i<=longitud; i++){
 		  printf("%ld\n\r", vector[i]);
 	  }
+
+	  for(int i = 0; i<longitud; i++){
+	  		  vector[i] = 15;
+	  	  }
+
+	  // Inicializar la variable mediante assembly
+	  array_init((uint32_t *)&vector, longitud);
+	  printf("\n\r");
+
+	  for(int i = 0; i<=longitud; i++){
+	  		  printf("%ld\n\r", vector[i]);
+	  	  }
+
 	 while(1);
     /* USER CODE BEGIN 3 */
   }
