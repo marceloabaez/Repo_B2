@@ -27,6 +27,7 @@
 #include "errno.h"
 #include "stdlib.h"
 #include "unistd.h"
+#include "asm_func.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -139,6 +140,15 @@ int main(void)
 	 for(int i=0; i<longitud; i++){
 		 printf("%ld * %ld = %ld\n\r", vector[i], escalar, output[i]);
 	 }
+
+	 // Misma funcion en assembly
+	 asm_prodEsc32(vector, output, longitud, escalar);
+	 printf("\r\n");
+	 for(int i=0; i<longitud; i++){
+		 printf("%ld * %ld = %ld\n\r", vector[i], escalar, output[i]);
+	 }
+
+
 	 while(1);
 	  /* USER CODE END WHILE */
 
