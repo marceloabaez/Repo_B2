@@ -139,7 +139,11 @@ void vTaskLed( void *pvParameters )
 		   	HAL_GPIO_WritePin( ptr->LDX_GPIO_Port, ptr->LDX_Pin, ptr->ledState );
 		}
 
-		/* Check Binary Semaphore */
+		/* Se eligió utilizar el semáforo MUTEX reteniendo el mismo con la función
+		 * task_Button en caso de encontrarse en estado Not_Blinking y liberándolo
+		 * en estado Blinking. task_Led en este caso solo lee los estados Blinking
+		 * y se bloquea el resto del tiempo. Se hozo esto porque solamente limitar
+		 * el acceso a la variable era muy similar al ejercicio anterior*/
 		if( xSemaphoreTake( MutexHandle, portMAX_DELAY))
 		{
 			vPrintTwoStrings( pcTaskName, pcTextForTask_MutexSemTaken );
