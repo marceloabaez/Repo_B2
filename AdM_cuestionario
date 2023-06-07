@@ -121,8 +121,21 @@ registros que fueron guardados antes del salto, todo esto mediante la instrucci�
 
 11) Describa la secuencia de reset del microprocesador.
 
+Al producirse el reset del microprocesador, el mismo busca el valor ubicado en la dirección
+0x0 de la memoria y lo guarda en el registro de Stack Pointer (es decir, la dirección 0 de 
+memoria contiene la dirección del comienzo del Stack. La segunda dirección de memoria (0x4),
+contiene la dirección de la primera instrucción de entrada luego del reset, por lo que la 
+misma se copia al registro Program Counter.
+
 12) ¿Qué entiende por “core peripherals”? ¿Qué diferencia existe entre estos y el resto de
 los periféricos?
+
+Los Core peripherals son periféricos internos del core, utilizados para controlar su
+funcionamiento interno, a diferencia de los otros periféricos que controlan elementos
+externos al núcleo. Los Core Peripherals son parte del núcleo del microcontrolador
+y por lo tanto son provistos junto con este en la IP que ARM vende a los fabricantes de
+microcontroladores/microprocesadores. Los Core Peripherals son el NVIC, MPU, System Control
+Block y el SysTick en el Cortex M3, y adicionalmente la FPU en el caso del Cortex M4.
 
 13) ¿Cómo se implementan las prioridades de las interrupciones? Dé un ejemplo
 
@@ -139,7 +152,21 @@ arrival.
 18) ¿Qué es el systick? ¿Por qué puede afirmarse que su implementación favorece la
 portabilidad de los sistemas operativos embebidos?
 
+El Sistick es un Core Peripheral de tipo timer que produce una interrupción a intervalos regulares.
+La ventaja que presenta para la implementación de sistemas operativos es que proporciona una
+base de tiempo para la ejecución del Scheduler, común a todos los sistemas operativos. Favorece
+la portabilidad porque el desarrollador del sistema operativo no debe hacerse cargo de la
+implementación de esta interrupción periódica necearia para el sistema operativo, la cual ya
+viene incluida en todos los procesadores que cuenten con SysTick. 
+
 19) ¿Qué funciones cumple la unidad de protección de memoria (MPU)?
+
+La unidad de protección de memoria tiene como fin restringir el acceso a regiones de memoria por
+parte de aplicaciones que no cuenten con permiso de acceso a las mismas. La MPU permite
+establecer dichas regiones y asignarles un nivel de prioridad. En caso de que alguna
+aplicación no autorizada intente acceder a las mismas se dispara una interrupción (MemManage)
+a la cual se puede asociar un handler que ejecute una acción correctiva o detenga la ejecución
+del programa.
 
 20) ¿Cuántas regiones pueden configurarse como máximo? ¿Qué ocurre en caso de haber
 solapamientos de las regiones? ¿Qué ocurre con las zonas de memoria no cubiertas por las
@@ -147,6 +174,9 @@ regiones definidas?
 
 21) ¿Para qué se suele utilizar la excepción PendSV? ¿Cómo se relaciona su uso con el resto
 de las excepciones? Dé un ejemplo.
+
+El PendSV se utiliza en los sistemas operativos de tiempo real para el cambio de contexto entre
+las distintas tareas ejecutadas por el RTOS. 
 
 22) ¿Para qué se suele utilizar la excepción SVC? Expliquelo dentro de un marco de un
 sistema operativo embebido.
@@ -156,7 +186,19 @@ ISA.
 
 1) ¿Qué son los sufijos y para qué se los utiliza? Dé un ejemplo.
 
+Los sufijos en las instrucciones de assembly producen que las mismas se ejecuten 
+
 2) ¿Para qué se utiliza el sufijo ‘s’? Dé un ejemplo.
+
+El sufijo 'S' al final de una instrucción le indica al procesador que el resultado de la
+misma debe afectar a los flags del registro APSR. Esto es útil cuando alguna instrucción
+posterior debe tener una ejecución condicionada por el resultado de una operación anterior.
+Un ejemplo de esto podría ser la implementación de un bucle, en el cual se decrementa
+un contador que al llegar a 0 produce un salto que produce la salida del mismo (o ingnora
+la instrucción de salto hacia atrás del bucle). En este caso a la instrucción SUB que
+decrementa la variable contador debe agregársele el sufijo 'S', para que al llegar a 0
+el flag Z del registro APSR se ponga en 1, utilizando el mismo como referencia de la
+instrucción condicional que controla el bucle. 
 
 3) ¿Qué utilidad tiene la implementación de instrucciones de aritmética saturada? Dé un
 ejemplo con operaciones con datos de 8 bits.
