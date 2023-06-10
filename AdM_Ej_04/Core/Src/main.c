@@ -67,7 +67,7 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-void productoEscalar16(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+void productoEscalar12(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -134,14 +134,15 @@ int main(void)
 	  uint16_t output[8];
 
 	  // Función de multiplicacion con saturación en C
-	  productoEscalar16(vector, output, longitud, escalar);
+	  productoEscalar12(vector, output, longitud, escalar);
 	  printf("\r\n");
 	  for(int i=0; i<longitud; i++){
 		  printf("%d * %d = %d\n\r", vector[i], escalar, output[i]);
 	  }
 
 	  // Función mediante código assembler
-	  productoEscalar16(vector, output, longitud, escalar);
+	  escalar = 23;
+	  asm_prodEsc12(vector, output, longitud, escalar);
 	 	  printf("\r\n");
 	 	  for(int i=0; i<longitud; i++){
 	 		  printf("%d * %d = %d\n\r", vector[i], escalar, output[i]);
@@ -368,7 +369,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void productoEscalar16(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar){
+void productoEscalar12(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar){
 	uint32_t temp;
 	for(int i=0; i<longitud; i++){
 		temp = vectorIn[i] * escalar;

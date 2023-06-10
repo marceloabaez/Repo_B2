@@ -12,19 +12,21 @@
 
 .thumb_func
 asm_prodEsc12:
+	PUSH {R0-R5}
 	MOV R5, #4095
 LOOP:
-	LDR R4, [R0], #4
+	LDRH R4, [R0], #2
 	MUL R4, R4, R3
 	CMP R4, R5
 	BHI SATURATED
 CONTINUE:
-	STRH R4, [R1], #4
+	STRH R4, [R1], #2
 	SUB R2, #1
 	CMP R2, #0
 	BEQ EXIT
 	B LOOP
 EXIT:
+	POP {R0-R5}
 	BX LR
 
 SATURATED:
