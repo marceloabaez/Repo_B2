@@ -6,15 +6,18 @@
 
 .thumb_func
 asm_prodEsc16:
-	LDR R4, [R0], #4
+	PUSH {R4}
+LOOP:
+	LDRH R4, [R0], #2
 	MUL R4, R4, R3
-	STRH R4, [R1], #4
+	STRH R4, [R1], #2
 	SUB R2, #1
 	CMP R2, #0
 	BEQ EXIT
-	B asm_prodEsc16
+	B LOOP
 EXIT:
 	BX LR
 
 exit:
+	POP {R4}
     BX lr
