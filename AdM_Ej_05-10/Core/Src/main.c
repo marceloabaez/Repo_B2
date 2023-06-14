@@ -131,14 +131,17 @@ int main(void)
 
 	  uint16_t vectorIn[20] = {2,5,76,23,55,12,12,33,1,0,24,78,6,8,9,66,33,94,21,12};
 	  uint16_t vectorOut[20];
+	  uint16_t vectorOut2[20];
 	  int32_t vectorIn32[20] = {2,2432225,-766000,23500,-550000,12,120000,-33,1000000,0,2400000,-78,-60000,8,9,660000,33,-94000,21,12};
 	  int16_t vectorOut16[20];
 	  uint32_t longitud = 20;
 	  uint32_t pos_max = 0;
 	  filtroVentana10(vectorIn, vectorOut, longitud);
-	  asm_pack32to16 (vectorIn32, vectorOut16,longitud);
-	  pos_max = asm_max(vectorIn32, longitud);
-	  printf("\n\r%ld\n\r", pos_max);
+	  asm_filtroVentana10(vectorIn, vectorOut2, longitud);
+
+	  //asm_pack32to16 (vectorIn32, vectorOut16,longitud);
+	  //pos_max = asm_max(vectorIn32, longitud);
+	  //printf("\n\r%ld\n\r", pos_max);
 	  while(1);
     /* USER CODE END WHILE */
 
