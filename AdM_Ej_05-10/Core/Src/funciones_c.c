@@ -56,5 +56,17 @@ uint32_t max (int32_t * vectorIn, uint32_t longitud){
 	return posicion;
 }
 
-
+void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N){
+	uint32_t salto = N;
+	uint32_t indiceOut = 0;
+	for(uint32_t i = 0; i < longitud; i++){
+		if(i == (salto - 1)){
+			salto += N;
+			continue;
+		}
+		vectorOut[indiceOut] = vectorIn[i];
+		indiceOut ++;
+	}
+return;
+}
 

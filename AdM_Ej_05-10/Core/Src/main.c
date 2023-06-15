@@ -139,6 +139,10 @@ int main(void)
 	  filtroVentana10(vectorIn, vectorOut, longitud);
 	  asm_filtroVentana10(vectorIn, vectorOut2, longitud);
 
+	  uint32_t vector_down_In[20] = {2,5,76,23,55,12,12,33,1,0,24,78,6,8,9,66,33,94,21,12};
+	  uint32_t vector_down_Out[20];
+	  uint32_t N = 5;
+	  downsampleM (vector_down_In, vector_down_Out, longitud, N);
 	  //asm_pack32to16 (vectorIn32, vectorOut16,longitud);
 	  //pos_max = asm_max(vectorIn32, longitud);
 	  //printf("\n\r%ld\n\r", pos_max);
