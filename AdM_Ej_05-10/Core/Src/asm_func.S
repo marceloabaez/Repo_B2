@@ -29,12 +29,14 @@ R10 : cantidad de elementos en la ventana
 */
 .thumb_func
 asm_filtroVentana10:
+// cargar valores limite
 	PUSH {R3-R10}
 	MOV R3, #-1
 	SUB R2, #1
 	LDRH R9, [R0]
 	LDRH R8, [R0, R2, LSL #1]
 	MOV R10, #11
+// incrementar contador de centro de ventana, comprobar condicion de salida, inicializar cuenta de ventana
 FILTRO_VENTANA_LOOP_1:
 	ADD R3, #1
 	CMP R3, R2
@@ -42,30 +44,29 @@ FILTRO_VENTANA_LOOP_1:
 	MOV R6, #0
 	SUB R4, R3, #6
 	MOV R7, #-1
+//Incrementar contadores de ventana, comprobar fin de ventana y guardar
 FILTRO_VENTANA_LOOP_2:
 	ADD R4, #1
 	ADD R7, #1
 	CMP r7, #10
-	ITTTT GT
+	ITTT GT
 	UDIVGT R6, R6, R10
 	STRHGT R6, [R1, R3, LSL #1]
-	ADDGT R3, #1
 	BGT FILTRO_VENTANA_LOOP_1
-
+// limite inferior de ventana menior a 0
     CMP R4, #0
     ITT LT
     ADDLT R6, R9
     BLT FILTRO_VENTANA_LOOP_2
-
+//limite superior de ventana mayor a longitud de array
     CMP R4, R2
     ITT GT
     ADDGT R6, R8
     BGT FILTRO_VENTANA_LOOP_2
-
+// valores dentro de rango
     LDRH R5, [R0, R4, LSL #1]
     ADD R6, R5
     B FILTRO_VENTANA_LOOP_2
-
 FILTRO_VENTANA_EXIT:
 	POP {R3-R10}
 	BX lr
