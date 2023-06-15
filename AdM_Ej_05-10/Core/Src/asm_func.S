@@ -11,6 +11,7 @@
 .global asm_filtroVentana10
 .global asm_pack32to16
 .global asm_max
+.global asm_downsampleM
 
 /*
 Filtro ventana, cuando los límites de la ventana sobrepasan los del array se repiten los valores
@@ -106,3 +107,47 @@ ASM_MAX_EXIT:
 	MOV R0, R3
 	POP {R4-R5}
 	BX lr
+
+/*
+Función para aliminar una cada N muestras en un array  de entrada y guardar las restantes
+en un array de salida
+R0 : dirección del array de entrada, luego utilizado para almacenar sus sucesivas direcciones
+R1 : dirección del array de salida,  luego utilizado para almacenar sus sucesivas direcciones
+R2 : longitud del array
+R3 : N, cantidad de elementos consecutivos de los cuales se elimina el último
+R4 : indice del array de entrada
+R5 : indice del array de salida
+R6 : indice del proximo valor a ser ignorado
+R7 : registro auxiliar para cargar los valores a copiar
+*/
+.thumb_func
+asm_downsampleM:
+    PUSH {R4-R7}
+    MOV R6, R3
+    SUB R6, #1
+    MOV R4, #0
+    MOV r5, #0
+
+asm_downsampleM_loop:
+    CMP R4, R2
+    BEQ asm_downsampleM_exit
+
+    CMP R6, R4
+    ITTT EQ
+    ADDEQ R6, R3
+    ADDEQ R4, #1
+    BEQ asm_downsampleM_loop
+
+    LDR R7, [R0, R4, LSL #2]
+    STR R7, [R1, R5, LSL #2]
+    ADD R4, #1
+    ADD R5, #1
+    B asm_downsampleM_loop
+
+asm_downsampleM_exit:
+    POP {R4-R7}
+    BX lr
+
+
+
+
