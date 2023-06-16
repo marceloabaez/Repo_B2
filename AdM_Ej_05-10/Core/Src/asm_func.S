@@ -12,6 +12,7 @@
 .global asm_pack32to16
 .global asm_max
 .global asm_downsampleM
+.global asm_invertir
 
 /*
 Filtro ventana, cuando los límites de la ventana sobrepasan los del array se repiten los valores
@@ -149,5 +150,38 @@ asm_downsampleM_exit:
     BX lr
 
 
+
+/*
+Función para invertir el órden de los elementos en un array
+R0 : dirección del array de entrada
+R1 : longitud del array
+R2 : indice inferior para el intercambio
+R3 : indice superior para el intercambio
+R4 : valor auxiliar para el intercambio
+R5 : segundo valor auliliar para el intercambio
+R6 : indice limtite a recorrer
+*/
+.thumb_func
+asm_invertir:
+	PUSH {R4-R6}
+	MOV R2, #0
+	SUB R3, R1, #1
+	LSR R6, R1, #1
+
+asm_invertir_loop:
+    CMP R6, R2
+    BLS asm_invertir_exit
+
+    LDRH R4, [R0, R2, LSL #1]
+    LDRH R5, [R0, R3, LSL #1]
+    STRH R4, [R0, R3, LSL #1]
+    STRH R5, [R0, R2, LSL #1]
+    ADD R2, #1
+    SUB R3, #1
+    B asm_invertir_loop
+
+asm_invertir_exit:
+	POP {R4-R6}
+	BX lr
 
 

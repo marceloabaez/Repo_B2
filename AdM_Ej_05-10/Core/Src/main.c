@@ -148,6 +148,30 @@ int main(void)
 	  //asm_pack32to16 (vectorIn32, vectorOut16,longitud);
 	  //pos_max = asm_max(vectorIn32, longitud);
 	  //printf("\n\r%ld\n\r", pos_max);
+
+	  // Prueba Ej 9
+	  uint16_t vector_ej_9[20] = {2,5,76,23,55,12,12,33,1,0,24,78,6,8,9,66,33,94,21,12};
+	  invertir(vector_ej_9, longitud);
+	  asm_invertir(vector_ej_9, longitud);
+
+
+	  // Prueba Eco
+	  int16_t entrada[4096];
+	  longitud = 4096;
+	  int aux = 10;
+	  entrada[0] = 0;
+	  for(uint32_t i = 1; i<longitud; i++){
+		  entrada[i] = entrada[i-1] + aux;
+		  if(entrada[i] > 6000 || entrada[i] < -6000){
+			  aux = aux * (-1);
+		  }
+	  }
+
+	  eco(entrada, longitud);
+
+	  for(int i=0; i <longitud; i++){
+		  printf("%d\n", entrada[i]);
+	  }
 	  while(1);
     /* USER CODE END WHILE */
 

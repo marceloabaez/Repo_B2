@@ -70,3 +70,27 @@ void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, ui
 return;
 }
 
+
+
+void invertir(uint16_t * vector, uint32_t longitud){
+    uint32_t indice_inf = 0;
+    uint32_t indice_sup = longitud - 1;
+    uint16_t aux = 0;
+    uint32_t limite = longitud/2;
+    for(indice_inf = 0; indice_inf < limite; indice_inf ++){
+    	aux = vector[indice_inf];
+    	vector[indice_inf] = vector[indice_sup];
+    	vector[indice_sup] = aux;
+    	indice_sup --;
+    }
+    return;
+}
+
+
+
+void eco(int16_t * entrada, uint32_t longitud){
+	for(int i = (longitud -1); i >= 882; i--){
+		entrada[i] = entrada[i] + (entrada[(i-882)]/2);
+	}
+	return;
+}
