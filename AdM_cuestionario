@@ -186,7 +186,12 @@ ISA.
 
 1) ¿Qué son los sufijos y para qué se los utiliza? Dé un ejemplo.
 
-Los sufijos en las instrucciones de assembly producen que las mismas se ejecuten 
+Los sufijos en las instrucciones de assembly producen que las mismas se ejecuten con
+ligeras modificaciones en su comportamiento. Por ejemplo al agregar el sufijo "S" la
+operación afecta los bits del registro APSR, y en otros casos indica datos operación
+con datos signados, en algunas operaciones el número 8 o 16 indica que la operación 
+se realiza sobre números de 8 o 16 bits, y algo similar ocurre con las letras B (byte)
+y H (half-word). 
 
 2) ¿Para qué se utiliza el sufijo ‘s’? Dé un ejemplo.
 
@@ -203,9 +208,21 @@ instrucción condicional que controla el bucle.
 3) ¿Qué utilidad tiene la implementación de instrucciones de aritmética saturada? Dé un
 ejemplo con operaciones con datos de 8 bits.
 
+La aritmética saturada se utiliza en generalmente en el procesamiento digital de señales.
+Sirve para que, en caso de que los datos resultantes de una operación excedan los límites
+del tipo de dato que los representa, dicho dato quede fijado en sus valores máximo o mínimo,
+según corresponda, en lugar de desbordar hacia el límite opuesto. Esto no elimina la
+distorsión producida, pero sí la reduce en gram medida, sobretodo en caos en que el valor
+que desborda no se exceda mucho de los límites del tipo de dato.
+Ej: si estamos midiendo con un conversor AD de 8 bits y tensión máxima de conversión de 
+2 volts, en los momentos en que la tensión medida supere este valor el dato guardado
+(no signado) será de 255, en lugar de desbordar desde el 0.  
+
+
 4) Describa brevemente la interfaz entre assembler y C ¿Cómo se reciben los argumentos
 de las funciones? ¿Cómo se devuelve el resultado? ¿Qué registros deben guardarse en la
 pila antes de ser modificados?
 
 5) ¿Qué es una instrucción SIMD? ¿En qué se aplican y que ventajas reporta su uso? Dé un
 ejemplo.
+
