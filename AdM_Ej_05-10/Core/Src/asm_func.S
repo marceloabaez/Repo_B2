@@ -13,6 +13,7 @@
 .global asm_max
 .global asm_downsampleM
 .global asm_invertir
+.global asm_eco
 
 /*
 Filtro ventana, cuando los límites de la ventana sobrepasan los del array se repiten los valores
@@ -183,5 +184,45 @@ asm_invertir_loop:
 asm_invertir_exit:
 	POP {R4-R6}
 	BX lr
+
+
+
+
+/*
+Función para instroducir un eco en un array de 4096 muestras de audio de 16 bits
+las mismas se tomaron con una tasa de muestreo de 44100 muestras/s. La función
+introduce un eco de la señal original con la mitad de la amplitud y 20ms de demora
+R0 : dirección del array de entrada
+R1 : longitud del array
+R2 : indice superior de recorrido del array
+R3 : indice inferior de recorrido del array
+R4 : almacena valor alto
+R5 : almacena valor bajo (eco)
+*/
+.thumb_func
+asm_eco:
+    PUSH {R2-R5}
+    SUB R3, R1, #1
+    LSL R3, #1
+    ADD R2, R3, R0
+    MOV R4, #882
+    LSL R4, #1
+    SUB R3, R2, R4
+
+asm_eco_loop:
+    LDRSH R5, [R3], #-2
+    ASR R5, #1
+    LDRSH R4, [R2]
+    ADD R4, R5
+    STRH R4, [R2], #-2
+    CMP R0, R3
+    BLS asm_eco_loop
+    POP {R2-R5}
+    BX lr
+
+
+
+
+
 
 

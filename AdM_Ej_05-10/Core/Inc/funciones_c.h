@@ -10,4 +10,5 @@ void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, ui
 void invertir(uint16_t * vector, uint32_t longitud);
 void eco(int16_t * entrada, uint32_t longitud);
 
+
 #endif

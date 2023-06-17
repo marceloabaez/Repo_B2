@@ -157,20 +157,23 @@ int main(void)
 
 	  // Prueba Eco
 	  int16_t entrada[4096];
+	  int16_t entrada_asm[4096];
 	  longitud = 4096;
-	  int aux = 10;
+	  int aux = 30;
 	  entrada[0] = 0;
+	  entrada_asm[0] = 0;
 	  for(uint32_t i = 1; i<longitud; i++){
 		  entrada[i] = entrada[i-1] + aux;
+		  entrada_asm[i] = entrada_asm[i-1] + aux;
 		  if(entrada[i] > 6000 || entrada[i] < -6000){
 			  aux = aux * (-1);
 		  }
 	  }
 
 	  eco(entrada, longitud);
-
+      asm_eco(entrada_asm, longitud);
 	  for(int i=0; i <longitud; i++){
-		  printf("%d\n", entrada[i]);
+		  printf("%d  -  %d\n\r", entrada[i], entrada_asm[i]);
 	  }
 	  while(1);
     /* USER CODE END WHILE */
