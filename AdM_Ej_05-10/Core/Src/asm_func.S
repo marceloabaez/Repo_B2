@@ -14,6 +14,7 @@
 .global asm_downsampleM
 .global asm_invertir
 .global asm_eco
+.global asm_eco_SIMD
 
 /*
 Filtro ventana, cuando los límites de la ventana sobrepasan los del array se repiten los valores
@@ -223,6 +224,40 @@ asm_eco_loop:
 
 
 
+/*
+Función para instroducir un eco en un array de 4096 muestras de audio de 16 bits
+las mismas se tomaron con una tasa de muestreo de 44100 muestras/s. La función
+introduce un eco de la señal original con la mitad de la amplitud y 20ms de demora
+Se utilizan instrucciones SIMD para acelerar el procesamiento
+R0 : dirección del array de entrada
+R1 : longitud del array
+R2 : indice superior de recorrido del array
+R3 : indice inferior de recorrido del array
+R4 : almacena valor alto
+R5 : almacena valor bajo (eco)
+R6 : almacena cero para poder dividir por dos los registros bajos con SHADD16
+*/
+.thumb_func
+asm_eco_SIMD:
+    PUSH {R2-R6}
+    SUB R3, R1, #2
+    LSL R3, #1
+    ADD R2, R3, R0
+    MOV R4, #882
+    LSL R4, #1
+    SUB R3, R2, R4
+    MOV R6, #0
+
+asm_eco_SIMD_loop:
+    LDR R5, [R3], #-4
+    SHADD16 R5, R5, R6
+    LDR R4, [R2]
+    SADD16 R4, R4, R5
+    STR R4, [R2], #-4
+    CMP R0, R3
+    BLS asm_eco_SIMD_loop
+    POP {R2-R6}
+    BX lr
 
 
 
