@@ -106,6 +106,9 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+  // Activa contador de ciclos (iniciar una sola vez)
+  DWT->CTRL |= 1 << DWT_CTRL_CYCCNTENA_Pos;
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -159,25 +162,42 @@ int main(void)
 	  int16_t entrada[4096];
 	  int16_t entrada_asm[4096];
 	  int16_t entrada_asm_SIMD[4096];
+	  int16_t entrada_asm_SIMD_10[4096];
 	  longitud = 4096;
 	  int aux = 30;
 	  entrada[0] = 0;
 	  entrada_asm[0] = 0;
 	  entrada_asm_SIMD[0] = 0;
+	  entrada_asm_SIMD_10[0] = 0;
 	  for(uint32_t i = 1; i<longitud; i++){
 		  entrada[i] = entrada[i-1] + aux;
 		  entrada_asm[i] = entrada_asm[i-1] + aux;
 		  entrada_asm_SIMD[i] = entrada_asm_SIMD[i-1] + aux;
+		  entrada_asm_SIMD_10[i] = entrada_asm_SIMD_10[i-1] + aux;
 		  if(entrada[i] > 6000 || entrada[i] < -6000){
 			  aux = aux * (-1);
 		  }
 	  }
 
+
+	  DWT->CYCCNT = 0; // Contador de ciclos a 0
 	  eco(entrada, longitud);
-      asm_eco(entrada_asm, longitud);
-      asm_eco_SIMD(entrada_asm_SIMD, longitud);
+	  volatile uint32_t Ciclos = DWT->CYCCNT;
+
+	  DWT->CYCCNT = 0;
+	  asm_eco(entrada_asm, longitud);
+	  Ciclos = DWT->CYCCNT;
+
+	  DWT->CYCCNT = 0;
+	  asm_eco_SIMD(entrada_asm_SIMD, longitud);
+	  Ciclos = DWT->CYCCNT;
+
+	  DWT->CYCCNT = 0;
+	  asm_eco_SIMD_10(entrada_asm_SIMD_10, longitud);
+	  Ciclos = DWT->CYCCNT;
+
 	  for(int i=0; i <longitud; i++){
-		  printf("%d  -  %d  -  %d\n\r", entrada[i], entrada_asm[i], entrada_asm_SIMD[i]);
+		  printf("%d  -  %d  -  %d  -  %d\n\r", entrada[i], entrada_asm[i], entrada_asm_SIMD[i], entrada_asm_SIMD_10[i]);
 	  }
 	  while(1);
     /* USER CODE END WHILE */
