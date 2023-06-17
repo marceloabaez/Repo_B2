@@ -223,6 +223,27 @@ Ej: si estamos midiendo con un conversor AD de 8 bits y tensión máxima de conv
 de las funciones? ¿Cómo se devuelve el resultado? ¿Qué registros deben guardarse en la
 pila antes de ser modificados?
 
+Una función en assembly recibe los argumentos desde su llamado en C en los primeros registros
+y en el orden en el que están listados en el llamado (primer argumento en R0, segundo en
+R1, etc). Luego de terminada la rutina, el valor de retorno debe almacenarse en el registro
+R0. Los registros que deben almacenarse en la pila antes de ser utilizados son los registros
+del R4 en adelante, los 3 primeros ya son tenidos en cuenta por el compilador de C, y quedan
+disponibles desde un principio para las operaciones en assembly. Todos estos requerimientos
+se encuentran expresados en el ARM Procedure Call Standard. 
+
 5) ¿Qué es una instrucción SIMD? ¿En qué se aplican y que ventajas reporta su uso? Dé un
 ejemplo.
 
+Las instrucciones SIMD permiten realizar operaciones sobre dos datos o grupos de datos de
+manera simultánea, siempre y cuando los mismos tengan un tamaño de 16 u 8 bits. Los dos
+datos a operar deben encontrarse juntos en una dirección de memoria de 32bits (dos datos
+de 16 bits o 4 de 8 bits). Con esto se aprovecha que, al procesar el CPU datos de 32bits,
+pueden en una misma instrucción ejecutarse simultáneamente dos operaciones sobre datos de
+16 bits o 4 sobre datos de 8bits. se aplican principalmente en el procesamiento de señales
+(DSP), permitiendo generar un ahorro significativo en los tiempos de procesamiento de
+grandes cantidades de datos, cuando dichos datos se expresan mediante 8 o 16 bits.
+Por ejemplo podríamos estar recibiendo lecturas con una resolución de 16 bits desde un
+sensor, estos datos pueden estar almacenándose en algun buffer en la memoria mediante
+DMA. Los datos estarán dispuestos en half-words consecutivos y una vez que se llena dicho
+buffer el procesador procesa dichos datos de a dos a la vez mediante instrucciones SIMD,
+almacenándolos de a pares en algún otro buffer. 
