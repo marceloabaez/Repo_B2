@@ -60,6 +60,7 @@ realizadas por la ALU entre registros.
 
 ------------------------------------------------------------------------------------------
 4) ¿Cómo es el mapa de memoria de la familia?
+
 El mapa de memoria de la familia Cortex de procesadores en de tipo unificada. Toda la
 memoria (programa, SRAM, externa, de control de periféricos internos y externos, etc) se
 encuentra mapeada en distintas porciones predefinidas de un único mapa de 4GB (usando
@@ -67,6 +68,7 @@ un direccionamiento de 32 bits).
  
 ------------------------------------------------------------------------------------------
 5) ¿Qué ventajas presenta el uso de los “shadowed pointers” del PSP y el MSP?
+
 El uso de Shadow Pointers permite utililizar dos stacks, el Main Stack y el Process Stack.
 Esto es aprovechado especialmente por los RTOS, donde el sistema operativo utiliza MSP
 para sus funciones y delega el PSP para las Tasks. Como el cambio entre PSP y MSP solo
@@ -168,15 +170,36 @@ aplicación no autorizada intente acceder a las mismas se dispara una interrupci
 a la cual se puede asociar un handler que ejecute una acción correctiva o detenga la ejecución
 del programa.
 
+----------------------------------------------------------------------------------------------
+
 20) ¿Cuántas regiones pueden configurarse como máximo? ¿Qué ocurre en caso de haber
 solapamientos de las regiones? ¿Qué ocurre con las zonas de memoria no cubiertas por las
 regiones definidas?
+
+El máximo de regiones configurables por el MPU es 8, más el seteo de background que incluye
+a toda región de memoria no englobada por alguna de éstas 8 regiones. En el caso de solapamiento
+de regiones, prima la configuración de la región que tenga un número ID más grande. Por ejemplo
+la si hay solapamiento entre las regiones 3 y 4, la zona solapada tendrá activados los permisos
+de acceso y escritura de memoria correspondientes a la zona 4. Es por ello que la zona de
+backgrund posee el ID 0, ya que su configuración debe ser ivalidada en todas las otras zonas
+que se definan las otras 8 regiones. Las regiones de memoria no cubiertas por las regiones
+definidas sontienen la restricciones de acceso correspondientes a la región de background. En
+caso de que ésta última fuera configurada para no cubrir la totalidad de los 4GB de memoria,
+como es habitual, el acceso a alguna de dichas zonas no cubiertas produce un fallo de tipo
+Abort Prefetch. 
+
+-----------------------------------------------------------------------------------------------
 
 21) ¿Para qué se suele utilizar la excepción PendSV? ¿Cómo se relaciona su uso con el resto
 de las excepciones? Dé un ejemplo.
 
 El PendSV se utiliza en los sistemas operativos de tiempo real para el cambio de contexto entre
-las distintas tareas ejecutadas por el RTOS. 
+las distintas tareas ejecutadas por el RTOS. Es una excepción de menor prioridad que otras
+excepciones. La razón de esto es que el cambio de contexto entre tareas solo debe realizarse
+una vez que todas las interrupciones hayan sido atendidas, y antes de retornar a la ejecución
+de las tareas. En este momento PendSV, en caso de ser requerido un cambio de contexto, guarda
+los registros (contexto) de la tarea que se estaba ejecutando y carga los de la tarea a
+ejecutar, retornando luego al modo thread para la ejecución de la nueva tarea. 
 
 22) ¿Para qué se suele utilizar la excepción SVC? Expliquelo dentro de un marco de un
 sistema operativo embebido.
