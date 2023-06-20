@@ -101,8 +101,11 @@ a modo Thread se continúa en modo privilegiada la ejecución.
 ------------------------------------------------------------------------------------------
 7) ¿Qué se entiende por modelo de registros ortogonal? Dé un ejemplo.
 
-Por modelo de registros ortogonal se entiende que los distintos registros especiales de control
-pueden 
+Por modelo de registro ortogonal se entiende que las instrucciones pueden utilizarse con 
+cualquier registro, tanto como operandos como para guardar el resultado de la operación. En
+este esquema todos los registros, inclusive el Program Counter, Stack Pointer y Link Register,
+pueden utilizarse como entradas o salidas de operaciones (aunque debe tenerse cuidado con
+estos últimos ya que pueden destruir el flujo de operación del microcontrolador). 
 
 ------------------------------------------------------------------------------------------
 8) ¿Qué ventajas presenta el uso de intrucciones de ejecución condicional (IT)? Dé un
@@ -167,7 +170,8 @@ Al producirse el reset del microprocesador, el mismo busca el valor ubicado en l
 0x0 de la memoria y lo guarda en el registro de Stack Pointer (es decir, la dirección 0 de 
 memoria contiene la dirección del comienzo del Stack. La segunda dirección de memoria (0x4),
 contiene la dirección de la primera instrucción de entrada luego del reset, por lo que la 
-misma se copia al registro Program Counter.
+misma se copia al registro Program Counter, comenzando entonces la ejecución del programa
+desde dicha dirección.
 
 --------------------------------------------------------------------------------------------
 12) ¿Qué entiende por “core peripherals”? ¿Qué diferencia existe entre estos y el resto de
@@ -195,20 +199,93 @@ estar disponibles todos los valores).
 Pueden fijarse las prioridades de las diferentes interrupciones escribiendo en los mencionados
 registros directamente o a través de funciones de CMSIS, corriendo en modo privilegiado.
 
-
-----------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
 14) ¿Qué es el CMSIS? ¿Qué función cumple? ¿Quién lo provee? ¿Qué ventajas aporta?
+
+El CMSIS (Cortex Microcontroller Software Interface Standard) es un framework desarrollado
+para proporcionar una plataforma estándar sobre la cual desarrollar software para procesadores
+Cortex, incluye funciones y definiciones para que los desarrolladores puedan interactuar de
+de manera sencilla y flexible con la gran variedad de procesadores Cortex existentes.
+Cumple la función de dar al usuario una interfaz simple de acceso al core y a los periféricos.
+Simplificando la reutilización de software y facilitanto la portabilidad entre la gran variedad
+de dispositivos que utilizan un core Cortex. Es desarrollado y provisto por ARM. Como ventaja
+aporta una reducción en cosatos de desarrollo de software al brindar estandarización a través
+todos los procesadores de la serie Cortex M. Provee una enfoque común para interactuar con 
+periféricos, RTOS y componentes de middleware.  
 
 ---------------------------------------------------------------------------------------------
 15) Cuando ocurre una interrupción, asumiendo que está habilitada ¿Cómo opera el
 microprocesador para atender a la subrutina correspondiente? Explique con un ejemplo.
 
+La secuencia del procesador ante una interrupción es la siguiente:
+a) Aceptación del requerimiento de excepción: La interrupción se encuentra habilitada y posee
+una prioridad mayor al nivel de prioridad actual, y no se encuentra blockeada por ningún 
+registro de enmascarado. Al producirse un evento el NVIC recibe una señal puede provenir de 
+distintas fuentes según la excepción (internas como el SysTick o las System Exceptions, externas
+desde alguno de los EXTI controllers, desde periféricos externos, etc).
+b) Secuencia de entrada al Handler: Guardado en el Stack (stacking) de un determinado número
+de registros, incluyendo la dirección de retorno. Fetch del vector de excepción (esto puede ser
+simultáneo con el stacking para reducir la latencia). Fetching de las instrucciones desde el Handler
+de la excepción. Se actualizan varios registros del NVIC y del core para señalar el nuevo estado
+de operación.
+c) Ejecución del Handler: El MSP es utilizado para operaciones sobre el Stack y el procesador
+ejecuta siempre en modo privilegiado. Si alguna otra excepción de menor o igual prioridad se produce
+mientras la ectual se está atendiendo, la misma queda en estado pendiente, siendo atendida al
+finalizar la actual. En caso de que la interrupción entrante sea de mayor prioridad, la ejecución
+del Handler actual se suspende para atender a la interrrupción de mayor prioridad, en lo que se 
+denomina interrupción anidada.
+d) Al finalizar el Handler de la interrupción, y si no hay otras interrupciones pendientes, se
+retorna al modo Thread actualizando el PC a un valor almacenado en el registro especial EXC_RETURN.
+Este registro no contiene la dirección de retorno sinó que es una codificación que representa el
+estado de ejecución al cual se vuelve. El procesador entonces recupera del Stack los registros
+que se habían gusrdado al comienzo de la interrupción, y el programa continúa donde había quedado.
+Ejemplo: Si desarrollamos un programa en el cual se utiliza un teclado o pulsador puede consultarse
+periódicamente el estado del mismo para saber si alguna tecla ha sido oprimida. Esto es ineficiente
+ya que el procesador gastará recursos de manera permanente aunque no se pulsen teclas la mayor
+parte del tiempo. Como alternativa pueden habilitarse los pines de entrada del teclado a un EXIC,
+para que en la detección de algún flanco éste último mande una señal al NVIC y ejecute un Handler
+que tome la lectura del teclado y la guarde en alguna variable, volviendo a continuación a la 
+ejecución normal del programa.
+
+
 ---------------------------------------------------------------------------------------------
 16) ¿Cómo cambia la operación de stacking al utilizar la unidad de punto flotante?
+
+La unidad de punto flotante (FPU) en los Cortex M4 cuenta con una serie de registros para almacenar
+este tipo de datos. Cuando se produce una excepción, si la misma utiliza estos registros, los
+valores originales se perderían, y es por ello que también pueden ser guardados antes de ejecutar
+el Handler y recuperados al regreso del programa. Como esto produce una demora adicional en el
+cambio de contexto y no todos los programas hacen uso del FPU, debe indicarse de alguna manera
+si estos registros deben ser preservados o no. Para ello al realizar el stacking el procesador
+comprueba el estado del bit FPCA del registro CONTROL (bit 2). Este bit se setea cuando se
+realiza alguna operación con la FPU, y para ponerlo a 0 se lo debe resetear manualmente. Cuando
+se efectúa el stacking al atender alguna excepción, el procesador verifica si este bit está en
+1, y en caso afirmativo almacena el contenido de los registros de punto flotante S0 a S15, en caso
+de estar en 0 omite este paso, con el consiguiente ahorro de tiempo. 
 
 ---------------------------------------------------------------------------------------------
 17) Explique las características avanzadas de atención a interrupciones: tail chaining y late
 arrival.
+
+Estas características tienen como fin mejorar la performance de las interrupciones:
+
+Tail Chaining: Esta característica indica que el procesador no debe realizar un cambio de contexto
+para atender interrupciones seguidas. En algunos procesadores, al terminar de atender una
+interrupción y tener otra pendiente, se recupera el contexto de ejecución normal y luego se
+produce un nuevo cambio de contexto para atender a la segunda interrupción. Esto provoca una
+pérdida de rendimiento al tener que realizar los cambios de contexto dos veces. En los
+procesadores con Tail Chaining, cuando se finaliza una interrupción estando otra pendiente, el
+mismo se mantiene en modo Handler hasta que no queden excepciones pendientes de atender.
+
+Late Arrival: Esta característica permite que no existan demoras adicionales cuando una
+interrupción de mayor prioridad ocurre mientras se está produciendo el cambio de contexto hacia
+una de menor prioridad. La primera parte del cambio de contexto consiste en el stacking de
+los registros del programa que se estaba ejecutando. Si se produce una interrupción de mayor
+antes del fetch del vector de la interrupción de menor prioridad, se realiza el fetch del vector
+de la interrupción de mayor prioridad. Si no fuera por el Late arrival, se comenzaría a ejecutar
+la interrupción menos prioritaria, para luego tener que guardar su contexto, ejecutar la de mayor
+prioridad, y luego recuperar el contexto de la interrupción de menor prioridad, lo que implica
+la pérdida de varios cilos de reloj, los cuales no ocurren de contar con la función Late Arrival. 
 
 ---------------------------------------------------------------------------------------------
 18) ¿Qué es el systick? ¿Por qué puede afirmarse que su implementación favorece la
