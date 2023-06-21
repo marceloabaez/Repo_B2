@@ -435,12 +435,16 @@ R6 : acumulado
 R7 : contador n
 R8 : contador n-l
 R9 : l (contador del vector correlación)
+R10 :
+R11 :
 */
 .thumb_func
 asm_corr_SIMD:
-    PUSH {R4-R11}
+    PUSH {R4-R12}
     MOV R9, #0
-    MOV R10, #0xFFFF0000
+    MOV R10, 0xFFFF
+    MOV R12, R10
+    LSL R10, #16
     SUB R11, R3, #1
 
 asm_corr_SIMD_loop1:
@@ -453,19 +457,18 @@ asm_corr_SIMD_loop1:
 asm_corr_SIMD_loop2:
     CMP R8, #-1
     BLT asm_corr_SIMD_continuar
-
-    LDRH R4, [R0, R7, LSL #1]
-    LDRH R5, [R1, R8, LSL #1]
+    LDR R4, [R0, R7, LSL #1]
+    LDR R5, [R1, R8, LSL #1]
 
     CMP R8, #-1
     IT EQ
     ANDEQ R5, R5, R10
-    CMP R7, R11
-    ITT EQ
-    ANDEQ R4, R10, LSR #16
-    ANDEQ R5, R10, LSR #16
 
-    SMLADD R6, R4, R5, R6
+    CMP R7, R11
+    IT EQ
+    ANDEQ R4, R4, R12
+
+    SMLAD R6, R4, R5, R6
 
 asm_corr_SIMD_continuar:
     ADD R7, #2
@@ -477,5 +480,5 @@ asm_corr_SIMD_continuar:
     B asm_corr_SIMD_loop1
 
 asm_corr_SIMD_exit:
-    POP {R4-R9}
+    POP {R4-R12}
     BX lr

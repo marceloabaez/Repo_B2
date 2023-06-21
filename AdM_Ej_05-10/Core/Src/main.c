@@ -132,6 +132,11 @@ int main(void)
   while (1)
   {
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	  // Filtro ventana
+
+
 	  uint16_t vectorIn[20] = {2,5,76,23,55,12,12,33,1,0,24,78,6,8,9,66,33,94,21,12};
 	  uint16_t vectorOut[20];
 	  uint16_t vectorOut2[20];
@@ -141,6 +146,11 @@ int main(void)
 	  uint32_t pos_max = 0;
 	  filtroVentana10(vectorIn, vectorOut, longitud);
 	  asm_filtroVentana10(vectorIn, vectorOut2, longitud);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	  // Descartar cada N muestras
 
 	  int32_t vector_down_In[20] = {2,5,76,23,55,12,12,33,1,0,24,78,6,8,9,66,33,94,21,12};
 	  int32_t vector_down_Out[20];
@@ -152,13 +162,18 @@ int main(void)
 	  //pos_max = asm_max(vectorIn32, longitud);
 	  //printf("\n\r%ld\n\r", pos_max);
 
-	  // Prueba Ej 9
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	  // Ej Invertir orden
+
 	  uint16_t vector_ej_9[20] = {2,5,76,23,55,12,12,33,1,0,24,78,6,8,9,66,33,94,21,12};
 	  invertir(vector_ej_9, longitud);
 	  asm_invertir(vector_ej_9, longitud);
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	  // Prueba Eco
+
 	  int16_t entrada[4096];
 	  int16_t entrada_asm[4096];
 	  int16_t entrada_asm_SIMD[4096];
@@ -196,10 +211,17 @@ int main(void)
 	  asm_eco_SIMD_10(entrada_asm_SIMD_10, longitud);
 	  Ciclos = DWT->CYCCNT; // 16.450 (sacrificando memoria de programa a cambio de velocidad)
 	  	  	  	  	  	  	// 16.439 ciclos optimizado y release
+
+
+	  // Imprimir resultados
+	  /*
 	  for(int i=0; i <longitud; i++){
 		  printf("%d  -  %d  -  %d  -  %d\n\r", entrada[i], entrada_asm[i], entrada_asm_SIMD[i], entrada_asm_SIMD_10[i]);
 	  }
+      */
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	  // Correlación
 
@@ -209,7 +231,8 @@ int main(void)
 	  int16_t vectorCorr[6] = {0,0,0,0,0,0};
 	  int16_t vectorCorr_asm[6] = {0,0,0,0,0,0};
 	  corr(vectorX, vectorY,vectorCorr, longitud);
-	  asm_corr(vectorX, vectorY, vectorCorr_asm, longitud);
+	  //asm_corr(vectorX, vectorY, vectorCorr_asm, longitud);
+	  asm_corr_SIMD(vectorX, vectorY, vectorCorr_asm, longitud);
 
 
 	  while(1);
