@@ -17,6 +17,7 @@
 .global asm_eco_SIMD
 .global asm_eco_SIMD_10
 .global asm_corr
+.global asm_corr_SIMD
 
 /*
 Filtro ventana, cuando los límites de la ventana sobrepasan los del array se repiten los valores
@@ -420,4 +421,61 @@ asm_corr_exit:
 
 
 
+/*
+Función para calcular la correlación cruzada entre los datos de dos arrays de longitud N,
+con un desplazamiento de entre 0 y N-1, guardando los resultados en otro array de salida
+de longitud N
+R0 : dirección del arrayX
+R1 : dirección del arrayY
+R2 : dirección del array de resultado
+R3 : longitud de los array
+R4 : almacenamiento del valor X
+R5 : almacenamiento del valor Y
+R6 : acumulado
+R7 : contador n
+R8 : contador n-l
+R9 : l (contador del vector correlación)
+*/
+.thumb_func
+asm_corr_SIMD:
+    PUSH {R4-R11}
+    MOV R9, #0
+    MOV R10, #0xFFFF0000
+    SUB R11, R3, #1
 
+asm_corr_SIMD_loop1:
+    MOV R6, #0
+    MOV R7, #0
+    SUB R8, R7, R9
+    CMP R9, R3
+    BGE asm_corr_SIMD_exit
+
+asm_corr_SIMD_loop2:
+    CMP R8, #-1
+    BLT asm_corr_SIMD_continuar
+
+    LDRH R4, [R0, R7, LSL #1]
+    LDRH R5, [R1, R8, LSL #1]
+
+    CMP R8, #-1
+    IT EQ
+    ANDEQ R5, R5, R10
+    CMP R7, R11
+    ITT EQ
+    ANDEQ R4, R10, LSR #16
+    ANDEQ R5, R10, LSR #16
+
+    SMLADD R6, R4, R5, R6
+
+asm_corr_SIMD_continuar:
+    ADD R7, #2
+    ADD R8, #2
+    CMP R7, R3
+    BLT asm_corr_SIMD_loop2
+    STRH R6, [R2, R9, LSL #1]
+    ADD R9, #1
+    B asm_corr_SIMD_loop1
+
+asm_corr_SIMD_exit:
+    POP {R4-R9}
+    BX lr

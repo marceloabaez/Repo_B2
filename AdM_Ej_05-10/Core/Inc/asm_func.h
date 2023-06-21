@@ -11,3 +11,4 @@ void asm_eco(int16_t * entrada, uint32_t longitud);
 void asm_eco_SIMD(int16_t * entrada, uint32_t longitud);
 void asm_eco_SIMD_10(int16_t * entrada, uint32_t longitud);
 void corr(int16_t * vectorX, int16_t * vectorY, int16_t * vectorCorr, uint32_t longitud);
+void corr_SIMD(int16_t * vectorX, int16_t * vectorY, int16_t * vectorCorr, uint32_t longitud);
