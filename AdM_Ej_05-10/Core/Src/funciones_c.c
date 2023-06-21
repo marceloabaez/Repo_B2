@@ -94,3 +94,21 @@ void eco(int16_t * entrada, uint32_t longitud){
 	}
 	return;
 }
+
+
+void corr(int16_t * vectorX, int16_t * vectorY, int16_t * vectorCorr, uint32_t longitud){
+	for(int32_t l = 0; l < longitud; l++){
+		for(int n = 0; n < longitud; n++){
+			if((n-l)<0){
+				continue;
+			}
+			vectorCorr[l] += vectorX[n]*vectorY[n-l];
+		}
+	}
+	return;
+}
+
+
+
+
+

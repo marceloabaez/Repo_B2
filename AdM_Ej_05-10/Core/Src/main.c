@@ -182,23 +182,36 @@ int main(void)
 
 	  DWT->CYCCNT = 0; // Contador de ciclos a 0
 	  eco(entrada, longitud);
-	  volatile uint32_t Ciclos = DWT->CYCCNT;
+	  volatile uint32_t Ciclos = DWT->CYCCNT; //183.311 ciclos / 32.162 ciclos optimizado y release
 
 	  DWT->CYCCNT = 0;
 	  asm_eco(entrada_asm, longitud);
-	  Ciclos = DWT->CYCCNT;
+	  Ciclos = DWT->CYCCNT; // 41.826 / 41.864 ciclos optimizado y release
 
 	  DWT->CYCCNT = 0;
 	  asm_eco_SIMD(entrada_asm_SIMD, longitud);
-	  Ciclos = DWT->CYCCNT;
+	  Ciclos = DWT->CYCCNT; // 20.943 20.924 ciclos optimizado y release
 
 	  DWT->CYCCNT = 0;
 	  asm_eco_SIMD_10(entrada_asm_SIMD_10, longitud);
-	  Ciclos = DWT->CYCCNT;
-
+	  Ciclos = DWT->CYCCNT; // 16.450 (sacrificando memoria de programa a cambio de velocidad)
+	  	  	  	  	  	  	// 16.439 ciclos optimizado y release
 	  for(int i=0; i <longitud; i++){
 		  printf("%d  -  %d  -  %d  -  %d\n\r", entrada[i], entrada_asm[i], entrada_asm_SIMD[i], entrada_asm_SIMD_10[i]);
 	  }
+
+
+	  // Correlación
+
+	  longitud = 6;
+	  int16_t vectorX[6] = {2,4,6,8,6,4};
+	  int16_t vectorY[6] = {6,8,6,4,2,0};
+	  int16_t vectorCorr[6] = {0,0,0,0,0,0};
+	  int16_t vectorCorr_asm[6] = {0,0,0,0,0,0};
+	  corr(vectorX, vectorY,vectorCorr, longitud);
+	  asm_corr(vectorX, vectorY, vectorCorr_asm, longitud);
+
+
 	  while(1);
     /* USER CODE END WHILE */
 

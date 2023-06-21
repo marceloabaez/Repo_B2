@@ -16,6 +16,7 @@
 .global asm_eco
 .global asm_eco_SIMD
 .global asm_eco_SIMD_10
+.global asm_corr
 
 /*
 Filtro ventana, cuando los límites de la ventana sobrepasan los del array se repiten los valores
@@ -262,7 +263,7 @@ asm_eco_SIMD_loop:
 
 
 
-/* SIMD 10
+/* SIMD 10 - Sacrifica memoria de programa a cambio de velocidad
 Función para instroducir un eco en un array de 4096 muestras de audio de 16 bits
 las mismas se tomaron con una tasa de muestreo de 44100 muestras/s. La función
 introduce un eco de la señal original con la mitad de la amplitud y 20ms de demora
@@ -363,4 +364,60 @@ asm_eco_SIMD_10_loop2:
 
     POP {R2-R7}
     BX lr
+
+
+
+
+/*
+Función para calcular la correlación cruzada entre los datos de dos arrays de longitud N,
+con un desplazamiento de entre 0 y N-1, guardando los resultados en otro array de salida
+de longitud N
+R0 : dirección del arrayX
+R1 : dirección del arrayY
+R2 : dirección del array de resultado
+R3 : longitud de los array
+R4 : almacenamiento del valor X
+R5 : almacenamiento del valor Y
+R6 : acumulado
+R7 : contador n
+R8 : contador n-l
+R9 : l (contador del vector correlación)
+*/
+.thumb_func
+asm_corr:
+    PUSH {R4-R9}
+    MOV R9, #0
+
+asm_corr_loop1:
+    MOV R6, #0
+    MOV R7, #0
+    SUB R8, R7, R9
+    CMP R9, R3
+    BGE asm_corr_exit
+
+asm_corr_loop2:
+    CMP R8, #0
+    BLT asm_corr_continuar
+    CMP R8, R3
+    BGE asm_corr_continuar
+    LDR R4, [R0, R7, LSL #1]
+    LDR R5, [R1, R8, LSL #1]
+    SMLABB R6, R4, R5, R6
+
+asm_corr_continuar:
+    ADD R7, #1
+    ADD R8, #1
+    CMP R7, R3
+    BLT asm_corr_loop2
+    STRH R6, [R2, R9, LSL #1]
+    ADD R9, #1
+    B asm_corr_loop1
+
+asm_corr_exit:
+    POP {R4-R9}
+    BX lr
+
+
+
+
 

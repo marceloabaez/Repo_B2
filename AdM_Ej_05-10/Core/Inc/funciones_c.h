@@ -9,6 +9,6 @@ uint32_t max (int32_t * vectorIn, uint32_t longitud);
 void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
 void invertir(uint16_t * vector, uint32_t longitud);
 void eco(int16_t * entrada, uint32_t longitud);
-
+void corr(int16_t * vectorX, int16_t * vectorY, int16_t * vectorCorr, uint32_t longitud);
 
 #endif
